@@ -6,11 +6,6 @@ export interface Order {
   Order: string;
 }
 
-// const campaignsBaseQuery = async ({ id }: { id: string }) => {
-//   const result = await axios.get(`http://localhost:8081/getOrders?id=${id}`);
-//   return result.data;
-// };
-
 export const campaignsSlice = createApi({
   reducerPath: 'campaignsSlice',
   baseQuery: fetchBaseQuery({

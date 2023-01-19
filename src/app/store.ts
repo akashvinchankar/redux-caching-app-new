@@ -9,22 +9,22 @@ import { campaignsSlice } from '../features/campaign/campaignsSlice';
 import { schedulesSlice } from '../features/campaign/schedulesSlice';
 import { screensSlice } from '../features/campaign/screensSlice';
 import { showsSlice } from '../features/campaign/showsSlice';
-// import storage from 'redux-persist/lib/storage';
-// import {
-//   persistReducer,
-//   persistStore,
-//   FLUSH,
-//   REHYDRATE,
-//   PAUSE,
-//   PERSIST,
-//   PURGE,
-//   REGISTER,
-// } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import {
+  persistReducer,
+  persistStore,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
 
-// const persistConfig = {
-//   key: 'root',
-//   storage,
-// };
+const persistConfig = {
+  key: 'root',
+  storage,
+};
 
 const rootReducer = combineReducers({
   [campaignsSlice.reducerPath]: campaignsSlice.reducer,
@@ -33,12 +33,16 @@ const rootReducer = combineReducers({
   [schedulesSlice.reducerPath]: schedulesSlice.reducer,
 });
 
-// const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(
       campaignsSlice.middleware,
       screensSlice.middleware,
       showsSlice.middleware,
@@ -57,4 +61,4 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action<string>
 >;
 
-// export const persistor = persistStore(store);
+export const persistor = persistStore(store);

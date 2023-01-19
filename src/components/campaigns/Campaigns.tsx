@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useFetchCampaignsQuery } from '../../features/campaign/campaignsSlice';
 import './Campaigns.css';
 import moment from 'moment';
+import { persistor } from '../../app/store';
 
 export interface Order {
   id: string;
@@ -12,6 +13,7 @@ const IDs = ['Order1', 'Order2', 'Order3', 'Order4', 'Order5', 'Order6'];
 
 const Campaigns = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [message, setMessage] = useState<string>('');
 
   const handleCheckboxChange = (id: string) => {
     if (selectedIds.includes(id)) {
@@ -20,8 +22,12 @@ const Campaigns = () => {
       setSelectedIds([...selectedIds, id]);
     }
   };
-
   // console.log(selectedIds);
+
+  const handleReload = () => {
+    window.location.reload();
+    persistor.purge();
+  };
 
   return (
     <div>
@@ -49,13 +55,24 @@ const Campaigns = () => {
 
       {selectedIds.length > 0 ? <p>{JSON.stringify(selectedIds)}</p> : null}
 
-      {/* <button
+      {message && <p>{message}</p>}
+
+      <button
         onClick={() => {
           persistor.purge();
+          setMessage('Storage has been purged');
         }}
       >
         Purge Storage
-      </button> */}
+      </button>
+      <button
+        onClick={() => {
+          setMessage('Page reloaded');
+          handleReload();
+        }}
+      >
+        Reload
+      </button>
     </div>
   );
 };
@@ -81,6 +98,7 @@ const ChildComponent = ({
 
   function handleRefetch() {
     // force re-fetches the data
+    // window.location.reload();
     refetch();
   }
 
