@@ -8,12 +8,13 @@ export interface Schedule {
 export const schedulesSlice = createApi({
   reducerPath: 'schedulesSlice',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8081/getSchedules',
+    baseUrl: 'http://localhost:8081',
   }),
+  serializeQueryArgs: (query: any) => query.queryArgs,
   keepUnusedDataFor: 28800,
   endpoints: (builder) => ({
-    fetchSchedules: builder.query<Schedule[], void>({
-      query: () => '',
+    fetchSchedules: builder.query<Schedule[], number>({
+      query: (id) => `getSchedules?id=${id}`,
     }),
   }),
 });

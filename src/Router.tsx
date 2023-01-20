@@ -6,6 +6,7 @@ import CampaignsLayout from './components/campaigns/CampaignsLayout';
 import Schedules from '../src/components/campaigns/Schedules';
 import PageNotFound from './components/campaigns/PageNotFound';
 import Shows from './components/campaigns/Shows';
+import Screens from './components/campaigns/Screens';
 
 export const Router: React.FC = () => (
   <BrowserRouter>
@@ -16,6 +17,7 @@ export const Router: React.FC = () => (
           <Route element={<Campaigns />} index />
           <Route element={<Schedules />} path="schedules" />
           <Route element={<Shows />} path="shows" />
+          <Route element={<Screens />} path="screens" />
         </Route>
       </Route>
       <Route element={<PageNotFound />} path="*" />

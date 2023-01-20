@@ -8,12 +8,13 @@ export interface Show {
 export const showsSlice = createApi({
   reducerPath: 'showsSlice',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8081/getShows',
+    baseUrl: 'http://localhost:8081',
   }),
+  serializeQueryArgs: (query: any) => query.queryArgs,
   keepUnusedDataFor: 28800,
   endpoints: (builder) => ({
-    fetchShows: builder.query<Show[], void>({
-      query: () => '',
+    fetchShows: builder.query<Show[], number>({
+      query: (id) => `getShows?id=${id}`,
     }),
   }),
 });

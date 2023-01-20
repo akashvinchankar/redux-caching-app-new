@@ -8,12 +8,12 @@ export interface Screen {
 export const screensSlice = createApi({
   reducerPath: 'screensSlice',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8081/getScreens',
+    baseUrl: 'http://localhost:8081',
   }),
   keepUnusedDataFor: 28800,
   endpoints: (builder) => ({
-    fetchScreens: builder.query<Screen[], void>({
-      query: () => '',
+    fetchScreens: builder.query<Screen[], string>({
+      query: (code) => `getShows?code=${code}`,
     }),
   }),
 });
