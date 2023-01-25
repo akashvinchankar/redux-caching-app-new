@@ -13,7 +13,7 @@ export const campaignsSlice = createApi({
   serializeQueryArgs: (query: any) => query.queryArgs,
   keepUnusedDataFor: 28800,
   endpoints: (builder) => ({
-    fetchCampaigns: builder.query<Order[], string>({
+    fetchCampaigns: builder.query<Order[], string | null>({
       query: (id) => `getOrders?id=${id}`,
     }),
   }),

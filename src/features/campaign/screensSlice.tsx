@@ -13,7 +13,7 @@ export const screensSlice = createApi({
   keepUnusedDataFor: 28800,
   endpoints: (builder) => ({
     fetchScreens: builder.query<Screen[], string>({
-      query: (code) => `getShows?code=${code}`,
+      query: (code) => `getScreens?code=${code}`,
     }),
   }),
 });

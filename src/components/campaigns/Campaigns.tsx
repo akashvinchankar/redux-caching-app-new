@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFetchCampaignsQuery } from '../../features/campaign/campaignsSlice';
 import './Campaigns.css';
 import moment from 'moment';
@@ -12,8 +12,19 @@ export interface Order {
 const IDs = ['Order1', 'Order2', 'Order3', 'Order4', 'Order5', 'Order6'];
 
 const Campaigns = () => {
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  // get the selected IDs from local storage on page load
+  const storedSelectedIds = localStorage.getItem('selectedIds');
+  const initialSelectedIds = storedSelectedIds
+    ? JSON.parse(storedSelectedIds)
+    : [];
+  const [selectedIds, setSelectedIds] = useState<string[]>(initialSelectedIds);
+
   const [message, setMessage] = useState<string>('');
+
+  // save the selected IDs to local storage every time they change
+  useEffect(() => {
+    localStorage.setItem('selectedIds', JSON.stringify(selectedIds));
+  }, [selectedIds]);
 
   const handleCheckboxChange = (id: string) => {
     if (selectedIds.includes(id)) {
@@ -21,12 +32,6 @@ const Campaigns = () => {
     } else {
       setSelectedIds([...selectedIds, id]);
     }
-  };
-  // console.log(selectedIds);
-
-  const handleReload = () => {
-    window.location.reload();
-    persistor.purge();
   };
 
   return (
@@ -36,7 +41,7 @@ const Campaigns = () => {
           <tr>
             <th>Select</th>
             <th>ID</th>
-            <th>Data</th>
+            <th style={{ width: '300px' }}>Description</th>
             <th>Fulfilled Time Stamp</th>
             <th>Update Data</th>
           </tr>
@@ -59,7 +64,8 @@ const Campaigns = () => {
 
       <button
         onClick={() => {
-          persistor.purge();
+          // persistor.purge();
+          localStorage.clear();
           setMessage('Storage has been purged');
         }}
       >
@@ -67,11 +73,19 @@ const Campaigns = () => {
       </button>
       <button
         onClick={() => {
-          setMessage('Page reloaded');
-          handleReload();
+          persistor.purge();
+          window.location.reload();
         }}
       >
-        Reload
+        Reload and Clear Cache
+      </button>
+      <button
+        onClick={() => {
+          setSelectedIds([]);
+          localStorage.removeItem('selectedIds');
+        }}
+      >
+        Clear Checkboxes
       </button>
     </div>
   );
@@ -94,13 +108,21 @@ const ChildComponent = ({
     isSuccess,
     fulfilledTimeStamp,
     refetch,
-  } = useFetchCampaignsQuery(id);
+  } = useFetchCampaignsQuery(selectedIds.includes(id) ? id : null);
 
   function handleRefetch() {
-    // force re-fetches the data
-    // window.location.reload();
     refetch();
   }
+
+  const [isDataFromLocalStorage, setIsDataFromLocalStorage] = useState(false);
+  useEffect(() => {
+    const dataFromLocalStorage = localStorage.getItem('persist:root');
+    if (dataFromLocalStorage) {
+      setIsDataFromLocalStorage(true);
+    } else {
+      setIsDataFromLocalStorage(false);
+    }
+  }, [id, isSuccess]);
 
   return (
     <tr>
@@ -113,18 +135,31 @@ const ChildComponent = ({
         />
       </td>
       <td>{id}</td>
-      <td>
+      <td
+        style={{
+          color: isFetching
+            ? 'green'
+            : isLoading
+            ? 'blue'
+            : isDataFromLocalStorage
+            ? 'blue'
+            : 'red',
+        }}
+      >
+        {/* {isFetching && <p>Fetching</p>} */}
         {isLoading && <p>Loading</p>}
-        {isFetching && <p>Fetching</p>}
         {error && <p>Something went wrong</p>}
-        {isSuccess && JSON.stringify(data)}
+        {isSuccess && selectedIds.includes(id) && JSON.stringify(data)}
       </td>
       <td>
         {isSuccess &&
+          selectedIds.includes(id) &&
           moment(fulfilledTimeStamp).format('MM/DD/YYYY, h:mm:ss a')}
       </td>
       <td>
-        <button onClick={handleRefetch}>Refetch</button>
+        {selectedIds.includes(id) && (
+          <button onClick={handleRefetch}>Refetch</button>
+        )}
       </td>
     </tr>
   );

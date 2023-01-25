@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFetchSchedulesQuery } from '../../features/campaign/schedulesSlice';
 import moment from 'moment';
 import { persistor } from '../../app/store';
@@ -94,15 +94,26 @@ const ChildComponent = ({
     fulfilledTimeStamp,
     refetch,
   } = useFetchSchedulesQuery(id);
+  const [isDataFromLocalStorage, setIsDataFromLocalStorage] = useState(false);
+
+  useEffect(() => {
+    const dataFromLocalStorage = localStorage.getItem(`schedule-1`);
+    console.log(dataFromLocalStorage);
+
+    if (dataFromLocalStorage) {
+      setIsDataFromLocalStorage(true);
+    } else {
+      setIsDataFromLocalStorage(false);
+    }
+  }, [isSuccess]);
 
   function handleRefetch() {
     // force re-fetches the data
-    // window.location.reload();
     refetch();
   }
 
   return (
-    <tr>
+    <tr style={{ color: isDataFromLocalStorage ? 'blue' : 'black' }}>
       <td>
         <input
           type="checkbox"

@@ -1,4 +1,14 @@
-table, th, td {
-    border: 1px solid black;
-    padding: 1rem;
+table,
+th,
+td {
+  border: 1px solid black;
+  padding: 1rem;
+}
+
+button {
+  padding: 0.2rem;
+  border: 2px solid;
+  border-radius: 5px;
+  margin: 0 0 2px 2px;
+  background-color: white;
 }
