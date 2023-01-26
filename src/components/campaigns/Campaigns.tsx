@@ -64,7 +64,7 @@ const Campaigns = () => {
 
       <button
         onClick={() => {
-          // persistor.purge();
+          persistor.purge();
           localStorage.clear();
           setMessage('Storage has been purged');
         }}
@@ -87,6 +87,9 @@ const Campaigns = () => {
       >
         Clear Checkboxes
       </button>
+      <p style={{ color: 'red' }}>
+        Clear checkboxes and Reload to get fresh data in the UI
+      </p>
     </div>
   );
 };
@@ -135,12 +138,15 @@ const ChildComponent = ({
         />
       </td>
       <td>{id}</td>
+      {/* as response time of server is 3secs, if the data we are getting is from api till the time we get data fetching message will be shown in green color */}
+      {/* if the data is from cache it will be loading from cache and it will be in cyan */}
+      {/* as we are persisting the whole app all the api response and data will be stored in local storage app will check for local data and it will change its color to blue */}
       <td
         style={{
           color: isFetching
             ? 'green'
             : isLoading
-            ? 'blue'
+            ? 'cyan'
             : isDataFromLocalStorage
             ? 'blue'
             : 'red',
